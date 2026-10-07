@@ -1,1165 +1,185 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Junction — Events for Students & Professionals</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-
-<link rel="stylesheet" href="css/style.css">
-
-  <!-- Google Identity Services -->
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
-
-  <style>
-    .google-divider {
-      display:flex;
-      align-items:center;
-      gap:0.75rem;
-      margin:1.15rem 0 0.9rem;
-      color:var(--muted);
-      font-size:0.72rem;
-      letter-spacing:0.08em;
-      font-weight:600;
-    }
-    .google-divider::before,
-    .google-divider::after {
-      content:"";
-      flex:1;
-      height:1px;
-      background:var(--border);
-    }
-    .google-signin-wrap {
-      display:flex;
-      justify-content:center;
-      min-height:44px;
-    }
-    .google-signin-wrap > div {
-      max-width:100%;
-    }
-  </style>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Junction — Events for Students & Professionals</title>
+  <link rel="stylesheet" href="/css/style.css" />
 </head>
-
 <body>
+  <header class="navbar">
+    <a class="brand" href="#home" onclick="scrollToSection('home')">
+      <span class="brand-icon">🎟</span>
+      <span>Junction</span>
+    </a>
 
-<!-- NAV -->
-<nav id="main-nav">
-  <div class="logo" onclick="showPage('home')">
-    <span class="logo-icon">🎟️</span>Junction<span></span>
-  </div>
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#events">Explore Events</a>
+      <a id="bookings-link" class="hidden" href="#bookings-section" onclick="showBookings(); return false;">My Bookings</a>
+    </nav>
 
-  <ul class="nav-links">
-    <li>
-      <a onclick="showPage('home')" id="nav-home" class="active">Home</a>
-    </li>
+    <div class="auth-area">
+      <button id="login-button" class="ghost-btn" onclick="showAuth('login')">Sign In</button>
+      <button id="signup-button" class="primary-small" onclick="showAuth('signup')">Create Account</button>
 
-    <li>
-      <a onclick="showPage('services')" id="nav-services">Explore Events</a>
-    </li>
-
-    <li>
-      <a onclick="showPage('home');setTimeout(()=>document.getElementById('therapists-section').scrollIntoView({behavior:'smooth'}),200)" id="nav-therapists">
-        Speakers
-      </a>
-    </li>
-
-    <li>
-      <a onclick="showPage('bookings')" id="nav-bookings">My Bookings</a>
-    </li>
-  </ul>
-
-  <div class="nav-right" id="nav-auth">
-    <button class="btn-nav" onclick="showLogin('signup')">
-      Create Account
-    </button>
-  </div>
-
-  <div class="nav-right" id="nav-user" style="display:none">
-    <div class="user-badge">
-      🎟️ <span id="nav-username">Guest</span>
+      <div id="user-area" class="user-area hidden">
+        <span id="user-name"></span>
+        <button class="ghost-btn" onclick="logout()">Logout</button>
+      </div>
     </div>
-
-    <button class="btn-nav-ghost" onclick="logout()">
-      Log Out
-    </button>
-  </div>
-</nav>
-
-
-<!-- ===== LOGIN PAGE ===== -->
-<div class="page" id="page-login">
-
-  <div class="login-wrapper">
-
-    <div class="login-left">
-      <div>
-
-        <div class="login-brand">🎟️ Junction</div>
-
-        <div class="login-tagline">
-          Events for Students & Professionals · Hyderabad
-        </div>
-
-        <ul class="login-features">
-
-          <li>
-            <div class="feat-dot">✦</div>
-            Real-time seat availability, every event
-          </li>
-
-          <li>
-            <div class="feat-dot">✦</div>
-            Choose your track, speaker, or mentor
-          </li>
-
-          <li>
-            <div class="feat-dot">✦</div>
-            Transparent pricing, zero hidden fees
-          </li>
-
-          <li>
-            <div class="feat-dot">✦</div>
-            Instant e-ticket on confirmation
-          </li>
-
-          <li>
-            <div class="feat-dot">✦</div>
-            One dashboard for every event you attend
-          </li>
-
-        </ul>
-      </div>
-
-      <div class="login-quote">
-        "The best network is built one room at a time."
-      </div>
-
-    </div>
-
-
-    <div class="login-right">
-
-      <div style="margin-bottom:1.8rem">
-
-        <div style="font-family:'Space Grotesk',sans-serif;font-size:1.7rem;font-weight:700;color:var(--ink);margin-bottom:0.3rem">
-          Create Your Account
-        </div>
-
-        <div style="font-size:0.82rem;color:var(--muted)">
-          Join Junction — free, takes 30 seconds 🎟️
-        </div>
-
-      </div>
-
-
-      <!-- LOGIN FORM -->
-      <div id="form-login" style="display:none">
-
-        <div class="form-group">
-          <label>Email Address</label>
-          <input type="email" id="login-email" placeholder="you@email.com">
-          <div class="field-error" id="login-email-err"></div>
-        </div>
-
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="login-pass" placeholder="••••••••">
-          <div class="field-error" id="login-pass-err"></div>
-        </div>
-
-        <div class="field-error" id="login-general-err" style="margin-bottom:0.75rem"></div>
-
-        <button class="btn-primary btn-full" onclick="doLogin()">
-          Sign In →
-        </button>
-
-        <div class="login-alt" style="margin-top:1rem">
-          New here?
-          <a onclick="switchTab('signup')">Create a free account</a>
-        </div>
-
-        <div class="google-divider"><span>OR</span></div>
-
-        <div id="google-signin-login" class="google-signin-wrap"></div>
-
-        <div class="demo-hint">
-          Demo login:
-          <strong>demo@junction.io</strong> /
-          <strong>demo123</strong>
-        </div>
-
-      </div>
-
-
-      <!-- SIGNUP FORM -->
-      <div id="form-signup">
-
-        <div class="form-row">
-
-          <div class="form-group">
-            <label>First Name</label>
-            <input type="text" id="reg-fname" placeholder="Aisha">
-          </div>
-
-          <div class="form-group">
-            <label>Last Name</label>
-            <input type="text" id="reg-lname" placeholder="Khan">
-          </div>
-
-        </div>
-
-
-        <div class="form-group">
-          <label>Email Address</label>
-          <input type="email" id="reg-email" placeholder="you@email.com">
-          <div class="field-error" id="reg-email-err"></div>
-        </div>
-
-
-        <div class="form-group">
-          <label>Mobile Number</label>
-          <input type="tel" id="reg-phone" placeholder="+91 98765 43210">
-        </div>
-
-
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="reg-pass" placeholder="Min. 6 characters">
-          <div class="field-error" id="reg-pass-err"></div>
-        </div>
-
-
-        <div class="field-error" id="reg-general-err" style="margin-bottom:0.75rem"></div>
-
-
-        <button class="btn-primary btn-full" onclick="doSignup()">
-          Create Account &amp; Continue →
-        </button>
-
-
-        <div class="login-alt" style="margin-top:1rem">
-          Already have an account?
-          <a onclick="switchTab('login')">Sign in here</a>
-        </div>
-
-        <div class="google-divider"><span>OR</span></div>
-
-        <div id="google-signin-signup" class="google-signin-wrap"></div>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</div>
-
-
-<!-- ===== HOME PAGE ===== -->
-<div class="page active" id="page-home">
-
-  <!-- HERO -->
-  <section class="hero">
-
-    <div class="hero-deco hero-deco-1">{ networking }</div>
-    <div class="hero-deco hero-deco-2">{ hackathon }</div>
-    <div class="hero-deco hero-deco-3">{ careers }</div>
-
-    <div class="hero-inner">
-
-      <div>
-
-        <div class="hero-tag">
-          Events for Students & Professionals &nbsp;·&nbsp; Hyderabad
-        </div>
-
-        <h1>
-          Walk into the room<br>
-          that changes your <em>trajectory</em>
-        </h1>
-
+  </header>
+
+  <main>
+    <section id="home" class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow">EVENTS · NETWORKING · COMMUNITY</span>
+        <h1>Find your next <span>Junction.</span></h1>
         <p>
-          From campus hackathons to industry summits — discover curated events,
-          reserve your seat in seconds, and show up ready.
+          Discover events for students and professionals, choose your seats,
+          book instantly and manage every booking in one place.
         </p>
-
-        <div class="hero-ctas">
-
-          <button class="btn-primary" onclick="showPage('services')">
-            Explore Events
-          </button>
-
-          <button class="btn-ghost" onclick="showLoginRequired()">
-            Reserve a Seat
-          </button>
-
+        <div class="hero-actions">
+          <button class="primary-btn" onclick="scrollToSection('events')">Explore Events</button>
+          <button class="secondary-btn" onclick="showAuth('signup')">Create Account</button>
         </div>
-
+        <div id="db-status" class="db-status">Checking database...</div>
       </div>
 
-
-      <div class="hero-visual">
-
-        <div class="ticket-stub">
-
-          <div class="ticket-main">
-
-            <div class="rating-row">
-              <span class="stars">★★★★★</span>
-              <span class="rating-text">
-                4.8 · 3,100+ attendees
-              </span>
-            </div>
-
-            <div style="font-family:'Space Grotesk',sans-serif;font-size:1.35rem;font-weight:700;color:var(--ink);margin-bottom:0.2rem">
-              BuildSprint 2026
-            </div>
-
-            <div style="font-size:0.8rem;color:var(--muted);margin-bottom:1rem">
-              National Hackathon · 2-day · Hybrid
-            </div>
-
-            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.3rem">
-
-              <span class="stag">Hackathon</span>
-              <span class="stag">Teams of 4</span>
-              <span class="stag">Prizes ₹5L+</span>
-
-            </div>
-
-
-            <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:1.25rem">
-
-              <div style="font-family:'Space Grotesk',sans-serif;font-size:1.3rem;font-weight:700;color:var(--ink)">
-                ₹999
-                <span style="font-size:0.72rem;font-family:'Inter',sans-serif;font-weight:400;color:var(--muted)">
-                  per team
-                </span>
-              </div>
-
-              <button class="btn-sm" onclick="showLoginRequired()">
-                Book Now
-              </button>
-
-            </div>
-
-          </div>
-
-
-          <div class="ticket-side">
-
-            <div class="ts-label">
-              ADMIT TEAM
-            </div>
-
-            <div class="ts-code">
-              #JCN-04
-            </div>
-
-          </div>
-
+      <div class="hero-panel">
+        <div class="panel-glow"></div>
+        <div class="quote">“The best network is built one room at a time.”</div>
+        <div class="hero-stat-grid">
+          <div><strong>Real-time</strong><span>Seat availability</span></div>
+          <div><strong>Instant</strong><span>Booking confirmation</span></div>
+          <div><strong>One place</strong><span>Booking management</span></div>
         </div>
+      </div>
+    </section>
 
-
-        <div class="hero-cards-row">
-
-          <div class="mini-card">
-
-            <div class="mini-icon">🗓️</div>
-
-            <div class="mini-label">
-              Next Batch
-            </div>
-
-            <div class="mini-value">
-              <span class="avail-dot"></span>
-              Aug 15, 9 AM
-            </div>
-
-          </div>
-
-
-          <div class="mini-card">
-
-            <div class="mini-icon">🎤</div>
-
-            <div class="mini-label">
-              Featured Speakers
-            </div>
-
-            <div class="mini-value">
-              40+ Experts
-            </div>
-
-          </div>
-
+    <section id="events" class="section">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">DISCOVER</span>
+          <h2>Upcoming events</h2>
         </div>
-
+        <div id="categories" class="categories"></div>
       </div>
 
-    </div>
-
-  </section>
-
-
-  <!-- HOW IT WORKS -->
-  <section class="how-it-works">
-
-    <div class="container">
-
-      <p class="section-tag">
-        The Process
-      </p>
-
-      <h2 class="section-title">
-        Booking made effortlessly simple
-      </h2>
-
-
-      <div class="steps-grid">
-
-        <div class="step-card">
-
-          <div class="step-num">1</div>
-
-          <div class="step-title">
-            Browse Events
-          </div>
-
-          <div class="step-desc">
-            Explore 8+ curated events across workshops, hackathons,
-            career fairs & more.
-          </div>
-
-        </div>
-
-
-        <div class="step-card">
-
-          <div class="step-num">2</div>
-
-          <div class="step-title">
-            View Live Seats
-          </div>
-
-          <div class="step-desc">
-            See real-time seat availability for the next 7 days —
-            before you commit.
-          </div>
-
-        </div>
-
-
-        <div class="step-card">
-
-          <div class="step-num">3</div>
-
-          <div class="step-title">
-            Pick Track & Time
-          </div>
-
-          <div class="step-desc">
-            Choose your preferred speaker or track and the batch
-            that fits your schedule.
-          </div>
-
-        </div>
-
-
-        <div class="step-card">
-
-          <div class="step-num">4</div>
-
-          <div class="step-title">
-            Confirm & Attend
-          </div>
-
-          <div class="step-desc">
-            Review your ticket summary, confirm, and get an instant e-ticket.
-          </div>
-
-        </div>
-
+      <div id="events-grid" class="events-grid">
+        <div class="loading">Loading events...</div>
       </div>
+    </section>
 
-    </div>
-
-  </section>
-
-
-  <!-- SPEAKERS -->
-  <section class="therapist-section" style="padding:6rem 3rem" id="therapists-section">
-
-    <div class="container">
-
-      <p class="section-tag">
-        Our Mentors
-      </p>
-
-      <h2 class="section-title">
-        Industry experts,<br>
-        real guidance
-      </h2>
-
-      <p class="section-sub">
-        Every speaker is vetted, experienced, and invested in your growth.
-      </p>
-
-
-      <div class="therapist-grid">
-
-        <div class="therapist-card">
-
-          <div class="therapist-avatar t1">💼</div>
-
-          <div class="therapist-name">
-            Ritika Bose
-          </div>
-
-          <div class="therapist-role">
-            Senior PM, Fintech
-          </div>
-
-          <div class="therapist-exp">
-            ★ 4.9 · 9 years
-          </div>
-
-          <div class="therapist-tags">
-            <span class="ttag">Resume</span>
-            <span class="ttag">Interviews</span>
-          </div>
-
+    <section id="bookings-section" class="section bookings-section">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">YOUR JUNCTION</span>
+          <h2>My bookings</h2>
         </div>
-
-
-        <div class="therapist-card">
-
-          <div class="therapist-avatar t2">⚡</div>
-
-          <div class="therapist-name">
-            Aman Verma
-          </div>
-
-          <div class="therapist-role">
-            Founder, DevStack
-          </div>
-
-          <div class="therapist-exp">
-            ★ 4.8 · 7 years
-          </div>
-
-          <div class="therapist-tags">
-            <span class="ttag">Startups</span>
-            <span class="ttag">Hackathons</span>
-          </div>
-
-        </div>
-
-
-        <div class="therapist-card">
-
-          <div class="therapist-avatar t3">🧠</div>
-
-          <div class="therapist-name">
-            Sneha Iyer
-          </div>
-
-          <div class="therapist-role">
-            ML Engineer, BigTech
-          </div>
-
-          <div class="therapist-exp">
-            ★ 5.0 · 6 years
-          </div>
-
-          <div class="therapist-tags">
-            <span class="ttag">AI/ML</span>
-            <span class="ttag">Data</span>
-          </div>
-
-        </div>
-
-
-        <div class="therapist-card">
-
-          <div class="therapist-avatar t4">🎯</div>
-
-          <div class="therapist-name">
-            Karan Malhotra
-          </div>
-
-          <div class="therapist-role">
-            Career Coach, Ex-HR
-          </div>
-
-          <div class="therapist-exp">
-            ★ 4.9 · 11 years
-          </div>
-
-          <div class="therapist-tags">
-            <span class="ttag">Careers</span>
-            <span class="ttag">LinkedIn</span>
-          </div>
-
-        </div>
-
       </div>
+      <div id="bookings-list"></div>
+    </section>
+  </main>
 
-    </div>
-
-  </section>
-
-
-  <!-- TESTIMONIALS -->
-  <section class="testimonials" style="padding:6rem 3rem">
-
-    <div class="container">
-
-      <p class="section-tag">
-        What Attendees Say
-      </p>
-
-      <h2 class="section-title">
-        Stories worth showing up for
-      </h2>
-
-
-      <div class="testi-grid">
-
-        <div class="testi-card">
-
-          <div class="testi-stars">
-            ★★★★★
-          </div>
-
-          <div class="testi-text">
-            "BuildSprint was the first hackathon where check-in actually
-            felt organized. Booked our team slot in under a minute."
-          </div>
-
-          <div class="testi-author">
-            <strong>Meera Krishnan</strong>
-            3rd Year, CS · BuildSprint 2026
-          </div>
-
-        </div>
-
-
-        <div class="testi-card">
-
-          <div class="testi-stars">
-            ★★★★★
-          </div>
-
-          <div class="testi-text">
-            "The live seat picker is brilliant — I could see exactly
-            which batch had space and who was speaking before I paid."
-          </div>
-
-          <div class="testi-author">
-            <strong>Arjun Patel</strong>
-            Product Analyst · Networking Mixer
-          </div>
-
-        </div>
-
-
-        <div class="testi-card">
-
-          <div class="testi-stars">
-            ★★★★★
-          </div>
-
-          <div class="testi-text">
-            "Karan's mock interview session was worth ten YouTube videos.
-            The confirmation summary showed every detail upfront."
-          </div>
-
-          <div class="testi-author">
-            <strong>Divya Reddy</strong>
-            Final Year, ECE · Confidence Lab
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- FOOTER -->
   <footer>
-
-    <div class="footer-logo">
-      🎟️ Junction
-    </div>
-
-    <ul class="footer-links">
-
-      <li>
-        <a onclick="showPage('services')">
-          Explore Events
-        </a>
-      </li>
-
-      <li>
-        <a onclick="showPage('home');setTimeout(()=>document.getElementById('therapists-section').scrollIntoView({behavior:'smooth'}),200)">
-          Speakers
-        </a>
-      </li>
-
-      <li>
-        <a onclick="showLoginRequired()">
-          Partner With Us
-        </a>
-      </li>
-
-      <li>
-        <a>
-          Contact
-        </a>
-      </li>
-
-    </ul>
-
-    <div>
-      © 2026 Junction · Hyderabad 🎟️
-    </div>
-
+    <strong>Junction</strong>
+    <span>Events for Students & Professionals · Hyderabad</span>
   </footer>
 
-</div>
+  <div id="auth-modal" class="modal hidden">
+    <div class="modal-card auth-card">
+      <button class="modal-close" onclick="closeAuth()">×</button>
 
-
-<!-- ===== EVENTS PAGE ===== -->
-<div class="page" id="page-services">
-
-  <div class="services-hero">
-
-    <div class="container">
-
-      <p class="section-tag">
-        All Events
-      </p>
-
-      <h1 style="font-family:'Space Grotesk',sans-serif;font-size:clamp(2.1rem,3.8vw,2.9rem);font-weight:700;color:var(--ink);line-height:1.2;margin-bottom:1rem;letter-spacing:-0.01em">
-        Curated events<br>
-        for every stage of your journey
-      </h1>
-
-      <p style="font-size:0.95rem;color:var(--slate);max-width:480px">
-        Select an event to view live seat availability, tracks,
-        and speakers before you book.
-      </p>
-
-
-      <div class="filter-bar">
-
-        <button class="filter-btn active" onclick="filterServices('all',this)">
-          All Events
-        </button>
-
-        <button class="filter-btn" onclick="filterServices('workshop',this)">
-          Workshops
-        </button>
-
-        <button class="filter-btn" onclick="filterServices('networking',this)">
-          Networking
-        </button>
-
-        <button class="filter-btn" onclick="filterServices('hackathon',this)">
-          Hackathons
-        </button>
-
-        <button class="filter-btn" onclick="filterServices('career',this)">
-          Career Fairs
-        </button>
-
-        <button class="filter-btn" onclick="filterServices('webinar',this)">
-          Webinars
-        </button>
-
-        <button class="filter-btn" onclick="filterServices('conference',this)">
-          Conferences
-        </button>
-
+      <div class="tabs">
+        <button id="login-tab" onclick="switchAuthTab('login')">Sign In</button>
+        <button id="signup-tab" onclick="switchAuthTab('signup')">Create Account</button>
       </div>
 
-    </div>
+      <div id="auth-error" class="form-error hidden"></div>
 
-  </div>
+      <form id="login-form" class="auth-form hidden" onsubmit="login(event)">
+        <h2>Welcome back</h2>
+        <p>Sign in to continue to Junction.</p>
 
+        <label>Email
+          <input name="email" type="email" required autocomplete="email" />
+        </label>
 
-  <div class="services-grid-full" id="services-grid"></div>
+        <label>Password
+          <input name="password" type="password" required autocomplete="current-password" />
+        </label>
 
-</div>
+        <button class="primary-btn full" type="submit">Sign In</button>
+        <div id="google-signin" class="google-button"></div>
+      </form>
 
+      <form id="signup-form" class="auth-form" onsubmit="signup(event)">
+        <h2>Create your account</h2>
+        <p>Join Junction in under a minute.</p>
 
-<!-- ===== MY BOOKINGS PAGE ===== -->
-<div class="page" id="page-bookings">
-
-  <div class="bookings-hero">
-
-    <div class="container">
-
-      <p class="section-tag">
-        My Account
-      </p>
-
-      <h1 style="font-family:'Space Grotesk',sans-serif;font-size:clamp(2rem,3.4vw,2.6rem);font-weight:700;color:var(--ink)">
-        My Bookings
-      </h1>
-
-      <p style="font-size:0.9rem;color:var(--slate);margin-top:0.5rem">
-        Your upcoming and past events on Junction
-      </p>
-
-    </div>
-
-  </div>
-
-  <div class="bookings-list" id="bookings-list"></div>
-
-</div>
-
-
-<!-- ===== SLOT PICKER MODAL ===== -->
-<div class="modal-overlay" id="slot-modal">
-
-  <div class="modal-box">
-
-    <div class="modal-header">
-
-      <div>
-
-        <div class="modal-service-name" id="modal-title">
-          Event Name
-        </div>
-
-        <div class="modal-service-meta" id="modal-meta">
-          Duration · Price
-        </div>
-
-      </div>
-
-      <button class="modal-close-btn" onclick="closeSlotModal()">
-        ✕
-      </button>
-
-    </div>
-
-
-    <div class="modal-body">
-
-      <div class="steps-flow">
-
-        <div class="step-item current" id="bstep-1">
-          <div class="step-circle">1</div>
-          <span>Select Batch</span>
-        </div>
-
-        <div class="step-line"></div>
-
-        <div class="step-item" id="bstep-2">
-          <div class="step-circle">2</div>
-          <span>Choose Speaker</span>
-        </div>
-
-        <div class="step-line"></div>
-
-        <div class="step-item" id="bstep-3">
-          <div class="step-circle">3</div>
-          <span>Confirm Booking</span>
-        </div>
-
-      </div>
-
-
-      <!-- STEP 1 -->
-      <div id="step-slot">
-
-        <p class="slot-section-title">
-          Select Date
-        </p>
-
-        <div class="date-tabs" id="date-tabs"></div>
-
-        <p class="slot-section-title">
-          Available Batches
-        </p>
-
-        <div class="slots-grid" id="slots-grid"></div>
-
-        <button class="btn-primary"
-                onclick="goToStep(2)"
-                id="btn-step2"
-                style="opacity:0.4;cursor:not-allowed"
-                disabled>
-          Choose Speaker →
-        </button>
-
-      </div>
-
-
-      <!-- STEP 2 -->
-      <div id="step-therapist" style="display:none">
-
-        <p class="slot-section-title">
-          Select Your Track / Speaker
-        </p>
-
-        <div class="therapist-select-row" id="therapist-options"></div>
-
-        <button class="btn-primary"
-                onclick="goToStep(3)"
-                id="btn-step3"
-                style="opacity:0.4;cursor:not-allowed"
-                disabled>
-          Review Booking →
-        </button>
-
-        <button class="btn-ghost"
-                onclick="goToStep(1)"
-                style="margin-left:0.75rem">
-          ← Back
-        </button>
-
-      </div>
-
-
-      <!-- STEP 3 -->
-      <div id="step-confirm" style="display:none">
-
-        <div class="booking-summary">
-
-          <div class="summary-title">
-            ✦ Booking Summary
-          </div>
-
-          <div class="summary-rows" id="summary-rows"></div>
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label>
-            Notes (optional)
+        <div class="two-col">
+          <label>First Name
+            <input name="name" type="text" required autocomplete="given-name" />
           </label>
 
-          <textarea id="special-notes"
-                    placeholder="Dietary needs, accessibility, or team member names..."
-                    style="height:80px;resize:none"></textarea>
-
+          <label>Mobile
+            <input name="mobile" type="tel" autocomplete="tel" />
+          </label>
         </div>
 
+        <label>Email Address
+          <input name="email" type="email" required autocomplete="email" />
+        </label>
 
-        <div style="display:flex;gap:0.75rem">
+        <label>Password
+          <input name="password" type="password" minlength="6" required autocomplete="new-password" />
+        </label>
 
-          <button class="btn-primary"
-                  style="flex:1"
-                  onclick="finalConfirm()">
-            ✓ Confirm Booking
-          </button>
+        <button class="primary-btn full" type="submit">Create Account & Continue →</button>
+      </form>
+    </div>
+  </div>
 
-          <button class="btn-ghost"
-                  onclick="goToStep(2)">
-            ← Back
-          </button>
+  <div id="seat-modal" class="modal hidden">
+    <div class="modal-card seat-card">
+      <button class="modal-close" onclick="closeSeatPicker()">×</button>
+      <h2 id="seat-event-title">Select seats</h2>
+      <p>Choose the seats you want to reserve.</p>
 
-        </div>
-
+      <div class="seat-legend">
+        <span><i class="legend available"></i> Available</span>
+        <span><i class="legend selected"></i> Selected</span>
+        <span><i class="legend booked"></i> Booked</span>
       </div>
 
-    </div>
+      <div id="seat-grid" class="seat-grid"></div>
 
+      <div class="seat-summary">
+        <span><strong id="selected-count">0</strong> seats</span>
+        <span>Total <strong id="selected-price">₹0</strong></span>
+        <button class="primary-btn" onclick="confirmBooking()">Book Now</button>
+      </div>
+    </div>
   </div>
 
-</div>
+  <div id="toast" class="toast hidden"></div>
 
+  <script>
+    // Google client ID is intentionally read from a server-rendered/configured
+    // value. For this static build, replace the empty string with your OAuth
+    // Web Client ID only if you want Google Sign-In enabled.
+    window.JUNCTION_GOOGLE_CLIENT_ID = "";
+  </script>
 
-<!-- ===== FINAL CONFIRMATION MODAL ===== -->
-<div class="confirm-modal" id="confirm-modal">
-
-  <div class="confirm-box">
-
-    <div class="confirm-icon">
-      🎟️
-    </div>
-
-    <div class="confirm-title">
-      Ticket Confirmed!
-    </div>
-
-    <div class="confirm-detail" id="confirm-detail"></div>
-
-    <div class="confirm-text">
-      Your e-ticket has been sent to your email. See you there! 🎉
-    </div>
-
-    <div class="confirm-btns">
-
-      <button class="btn-primary"
-              onclick="closeConfirm();showPage('bookings')">
-        View My Bookings
-      </button>
-
-      <button class="btn-ghost"
-              onclick="closeConfirm()">
-        Back to Events
-      </button>
-
-    </div>
-
-  </div>
-
-</div>
-
-
-<!-- TOAST -->
-<div class="toast" id="toast">
-
-  <div class="toast-dot"></div>
-
-  <span id="toast-msg">
-    Done!
-  </span>
-
-</div>
-
-
-<!-- JAVASCRIPT FILES -->
-<script src="js/state.js"></script>
-<script src="js/data.js"></script>
-<script src="js/auth.js"></script>
-<script src="js/navigation.js"></script>
-<script src="js/events.js"></script>
-<script src="js/booking.js"></script>
-<script src="js/bookings.js"></script>
-<script src="js/main.js"></script>
-
-
-<script>
-  // ---------------------------------------------------------------------------
-  // Google Sign-In
-  // Client ID created in Google Cloud for the Junction web application.
-  // IMPORTANT: Never put the OAuth client SECRET in this HTML file.
-  // ---------------------------------------------------------------------------
-  const GOOGLE_CLIENT_ID =
-     "557744010943-1esnm35sr9qk4hd891atu4gipq02nj3d.apps.googleusercontent.com"
-  function decodeGoogleJwtPayload(token) {
-    try {
-      const payload = token.split('.')[1]
-        .replace(/-/g, '+')
-        .replace(/_/g, '/');
-      const padded = payload + '='.repeat((4 - payload.length % 4) % 4);
-      return JSON.parse(atob(padded));
-    } catch (err) {
-      console.error('Could not read Google credential:', err);
-      return null;
-    }
-  }
-
-  function handleGoogleCredential(response) {
-    const profile = decodeGoogleJwtPayload(response.credential);
-
-    if (!profile || !profile.email) {
-      alert('Google sign-in failed. Please try again.');
-      return;
-    }
-
-    // Store the Google profile for this front-end demo.
-    // For production, send response.credential to your server and verify it
-    // there before creating a session.
-    const googleUser = {
-      id: profile.sub,
-      firstName: profile.given_name || '',
-      lastName: profile.family_name || '',
-      name: profile.name || profile.email,
-      email: profile.email,
-      picture: profile.picture || '',
-      provider: 'google',
-      loggedIn: true
-    };
-
-    localStorage.setItem('junction_google_user', JSON.stringify(googleUser));
-
-    // Keep the existing app UI working even though auth.js is local/demo auth.
-    localStorage.setItem('junction_user', JSON.stringify(googleUser));
-    localStorage.setItem('junction_logged_in', 'true');
-
-    const usernameEl = document.getElementById('nav-username');
-    if (usernameEl) usernameEl.textContent = googleUser.firstName || googleUser.name;
-
-    const navAuth = document.getElementById('nav-auth');
-    const navUser = document.getElementById('nav-user');
-    if (navAuth) navAuth.style.display = 'none';
-    if (navUser) navUser.style.display = 'flex';
-
-    // Close the login page and take the user to the home page.
-    if (typeof showPage === 'function') {
-      showPage('home');
-    }
-
-    if (typeof showToast === 'function') {
-      showToast('Signed in with Google ✓');
-    }
-  }
-
-  function renderGoogleButtons() {
-    if (!window.google || !google.accounts || !google.accounts.id) {
-      return;
-    }
-
-    const buttonOptions = {
-      type: 'standard',
-      theme: 'outline',
-      size: 'large',
-      text: 'continue_with',
-      shape: 'rectangular',
-      width: 360
-    };
-
-    ['google-signin-signup', 'google-signin-login'].forEach(function(id) {
-      const container = document.getElementById(id);
-      if (!container || container.dataset.googleRendered === 'true') return;
-
-      google.accounts.id.renderButton(container, buttonOptions);
-      container.dataset.googleRendered = 'true';
-    });
-  }
-
-  function initGoogleSignIn() {
-    if (!window.google || !google.accounts || !google.accounts.id) {
-      setTimeout(initGoogleSignIn, 300);
-      return;
-    }
-
-    google.accounts.id.initialize({
-      client_id: GOOGLE_CLIENT_ID,
-      callback: handleGoogleCredential,
-      auto_select: false
-    });
-
-    renderGoogleButtons();
-  }
-
-  window.addEventListener('load', initGoogleSignIn);
-
-  // If the app switches between Login and Signup after page load,
-  // make sure the Google button is still present.
-  const originalSwitchTab = window.switchTab;
-  if (typeof originalSwitchTab === 'function') {
-    window.switchTab = function(tab) {
-      originalSwitchTab.apply(this, arguments);
-      setTimeout(renderGoogleButtons, 50);
-    };
-  }
-</script>
-
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="/js/state.js"></script>
+  <script src="/js/data.js"></script>
+  <script src="/js/events.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/booking.js"></script>
+  <script src="/js/bookings.js"></script>
+  <script src="/js/navigation.js"></script>
+  <script src="/js/main.js"></script>
 </body>
 </html>

@@ -1,0 +1,289 @@
+{
+  "users": [
+    {
+      "name": "Demo User",
+      "firstName": "Demo",
+      "lastName": "User",
+      "email": "demo@junction.com",
+      "mobile": "9876543210",
+      "phone": "9876543210",
+      "password": "$2b$10$jufX09zswbSu4n4PNNMMOu0VLR18Gj46HNPDAup/FLP5.bkE4/p/a",
+      "provider": "local",
+      "picture": "",
+      "createdAt": "2026-10-03T06:08:05.541Z",
+      "updatedAt": "2026-10-03T06:08:05.542Z",
+      "_id": "6ac09bc59a86b315ea6afbf5"
+    },
+    {
+      "name": "Aarav Patel",
+      "firstName": "Aarav",
+      "lastName": "Patel",
+      "email": "testuser_1791007769699@example.com",
+      "mobile": "9876543210",
+      "phone": "9876543210",
+      "password": "$2b$10$/zzvABIj9lO14tGixxi8iO5TrYRxHx3XOwPnMbQWZaf9qVz8YxR36",
+      "provider": "local",
+      "picture": "",
+      "createdAt": "2026-10-03T06:09:29.862Z",
+      "updatedAt": "2026-10-03T06:09:29.862Z",
+      "_id": "6ac09c199a86b315ea6afbfd"
+    },
+    {
+      "name": "Aarav Patel",
+      "firstName": "Aarav",
+      "lastName": "Patel",
+      "email": "testuser_1791008218199@example.com",
+      "mobile": "9876543210",
+      "phone": "9876543210",
+      "password": "$2b$10$JGe4X5VGcfS26OoGlaMRvOdK.wURGA/eZir030eE2coagvLNQNz7a",
+      "provider": "local",
+      "picture": "",
+      "createdAt": "2026-10-03T06:16:58.356Z",
+      "updatedAt": "2026-10-03T06:16:58.356Z",
+      "_id": "6ac09dda9a86b315ea6afc00"
+    }
+  ],
+  "events": [
+    {
+      "title": "AI & GenAI Developers Summit 2026",
+      "description": "Hands-on architectural deep dive into agentic systems, LLM orchestration, model tuning, and production AI deployment.",
+      "category": "Technology",
+      "date": "Nov 12, 2026",
+      "time": "09:30 AM - 05:00 PM",
+      "venue": "T-Hub Phase 2, Knowledge City, Hyderabad",
+      "price": 499,
+      "totalSeats": 30,
+      "bookedSeats": [
+        "S2",
+        "S5",
+        "S14"
+      ],
+      "image": "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&auto=format&fit=crop",
+      "speakers": [
+        {
+          "name": "Dr. Ananya Roy",
+          "role": "AI Research Lead",
+          "company": "Google DeepMind"
+        },
+        {
+          "name": "Vikram Malhotra",
+          "role": "VP of Engineering",
+          "company": "Anthropic"
+        }
+      ],
+      "createdAt": "2026-10-03T06:08:05.543Z",
+      "updatedAt": "2026-10-03T06:08:05.543Z",
+      "_id": "6ac09bc59a86b315ea6afbf6"
+    },
+    {
+      "title": "Fullstack Cloud & Microservices Bootcamp",
+      "description": "Master modern microservices, Docker orchestration, distributed caching, and zero-downtime CI/CD workflows.",
+      "category": "Technology",
+      "date": "Nov 19, 2026",
+      "time": "10:00 AM - 04:30 PM",
+      "venue": "HITEC City Convention Center, Hyderabad",
+      "price": 349,
+      "totalSeats": 25,
+      "bookedSeats": [
+        "S1",
+        "S3"
+      ],
+      "image": "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800&auto=format&fit=crop",
+      "speakers": [
+        {
+          "name": "Karthik Reddy",
+          "role": "Cloud Architect",
+          "company": "AWS"
+        }
+      ],
+      "createdAt": "2026-10-03T06:08:05.543Z",
+      "updatedAt": "2026-10-03T06:08:05.543Z",
+      "_id": "6ac09bc59a86b315ea6afbf7"
+    },
+    {
+      "title": "Student Founders & Angel Networking 2026",
+      "description": "Pitch your venture to active angel investors, get real feedback from VCs, and network with ambitious student founders.",
+      "category": "Business",
+      "date": "Nov 26, 2026",
+      "time": "02:00 PM - 07:00 PM",
+      "venue": "T-Hub Auditorium, Madhapur, Hyderabad",
+      "price": 299,
+      "totalSeats": 35,
+      "bookedSeats": [
+        "S4",
+        "S7",
+        "S11",
+        "S12"
+      ],
+      "image": "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&auto=format&fit=crop",
+      "speakers": [
+        {
+          "name": "Meera Sen",
+          "role": "Managing Partner",
+          "company": "Hyderabad Angels"
+        },
+        {
+          "name": "Rohan Varma",
+          "role": "Founder",
+          "company": "NextGen Labs"
+        }
+      ],
+      "createdAt": "2026-10-03T06:08:05.543Z",
+      "updatedAt": "2026-10-03T06:08:05.543Z",
+      "_id": "6ac09bc59a86b315ea6afbf8"
+    },
+    {
+      "title": "Product-Led Growth & SaaS Scaling Masterclass",
+      "description": "Unpack viral loops, acquisition funnels, onboarding experiments, and unit economics that drive SaaS from $0 to $10M ARR.",
+      "category": "Business",
+      "date": "Dec 03, 2026",
+      "time": "10:30 AM - 03:30 PM",
+      "venue": "Novotel Hyderabad Convention Centre",
+      "price": 599,
+      "totalSeats": 20,
+      "bookedSeats": [
+        "S10",
+        "S1",
+        "S2"
+      ],
+      "image": "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=800&auto=format&fit=crop",
+      "speakers": [
+        {
+          "name": "Siddharth Nair",
+          "role": "Head of Product",
+          "company": "Freshworks"
+        }
+      ],
+      "createdAt": "2026-10-03T06:08:05.543Z",
+      "updatedAt": "2026-10-03T06:08:05.543Z",
+      "_id": "6ac09bc59a86b315ea6afbf9"
+    },
+    {
+      "title": "UI/UX & Scalable Design Systems Workshop",
+      "description": "Build robust token-driven design systems in Figma and code responsive, accessible web components that scale.",
+      "category": "Design",
+      "date": "Dec 10, 2026",
+      "time": "01:00 PM - 06:00 PM",
+      "venue": "Design Hive, Jubilee Hills, Hyderabad",
+      "price": 399,
+      "totalSeats": 25,
+      "bookedSeats": [
+        "S6",
+        "S9"
+      ],
+      "image": "https://images.unsplash.com/photo-1581291518655-9523c932deb4?w=800&auto=format&fit=crop",
+      "speakers": [
+        {
+          "name": "Pooja Krishnan",
+          "role": "Staff Product Designer",
+          "company": "Figma Community"
+        }
+      ],
+      "createdAt": "2026-10-03T06:08:05.543Z",
+      "updatedAt": "2026-10-03T06:08:05.543Z",
+      "_id": "6ac09bc59a86b315ea6afbfa"
+    },
+    {
+      "title": "Immersive 3D & Creative Web Experience",
+      "description": "Dive into Three.js, WebGL shaders, WebXR, and interactive animation techniques for next-generation digital products.",
+      "category": "Design",
+      "date": "Dec 17, 2026",
+      "time": "02:30 PM - 06:30 PM",
+      "venue": "Art & Tech Studio, Banjara Hills, Hyderabad",
+      "price": 449,
+      "totalSeats": 20,
+      "bookedSeats": [],
+      "image": "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=800&auto=format&fit=crop",
+      "speakers": [
+        {
+          "name": "Arjun Rao",
+          "role": "Creative Technologist",
+          "company": "Awwwards Nominee"
+        }
+      ],
+      "createdAt": "2026-10-03T06:08:05.543Z",
+      "updatedAt": "2026-10-03T06:08:05.543Z",
+      "_id": "6ac09bc59a86b315ea6afbfb"
+    },
+    {
+      "title": "Tech Leadership & Career Roadmap 2027",
+      "description": "Senior engineering managers share interview strategies, technical leadership principles, and career progression secrets.",
+      "category": "Other",
+      "date": "Dec 22, 2026",
+      "time": "05:00 PM - 08:30 PM",
+      "venue": "Gachibowli Tech Amphitheatre, Hyderabad",
+      "price": 199,
+      "totalSeats": 40,
+      "bookedSeats": [
+        "S3",
+        "S8",
+        "S15",
+        "S22"
+      ],
+      "image": "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800&auto=format&fit=crop",
+      "speakers": [
+        {
+          "name": "Harish Nambiar",
+          "role": "Director of Engineering",
+          "company": "Microsoft"
+        }
+      ],
+      "createdAt": "2026-10-03T06:08:05.543Z",
+      "updatedAt": "2026-10-03T06:08:05.543Z",
+      "_id": "6ac09bc59a86b315ea6afbfc"
+    }
+  ],
+  "speakers": [],
+  "bookings": [
+    {
+      "userId": "6ac09c199a86b315ea6afbfd",
+      "eventId": "6ac09bc59a86b315ea6afbf9",
+      "seats": [
+        "S1",
+        "S2"
+      ],
+      "total": 1198,
+      "status": "cancelled",
+      "createdAt": "2026-10-03T06:09:29.951Z",
+      "updatedAt": "2026-10-03T06:09:29.960Z",
+      "_id": "6ac09c199a86b315ea6afbfe"
+    },
+    {
+      "userId": "6ac09c199a86b315ea6afbfd",
+      "eventId": "6ac09bc59a86b315ea6afbf9",
+      "seats": [
+        "S1"
+      ],
+      "total": 599,
+      "status": "confirmed",
+      "createdAt": "2026-10-03T06:09:29.963Z",
+      "updatedAt": "2026-10-03T06:09:29.963Z",
+      "_id": "6ac09c199a86b315ea6afbff"
+    },
+    {
+      "userId": "6ac09dda9a86b315ea6afc00",
+      "eventId": "6ac09bc59a86b315ea6afbf9",
+      "seats": [
+        "S2",
+        "S3"
+      ],
+      "total": 1198,
+      "status": "cancelled",
+      "createdAt": "2026-10-03T06:16:58.448Z",
+      "updatedAt": "2026-10-03T06:16:58.456Z",
+      "_id": "6ac09dda9a86b315ea6afc01"
+    },
+    {
+      "userId": "6ac09dda9a86b315ea6afc00",
+      "eventId": "6ac09bc59a86b315ea6afbf9",
+      "seats": [
+        "S2"
+      ],
+      "total": 599,
+      "status": "confirmed",
+      "createdAt": "2026-10-03T06:16:58.459Z",
+      "updatedAt": "2026-10-03T06:16:58.459Z",
+      "_id": "6ac09dda9a86b315ea6afc02"
+    }
+  ]
+}

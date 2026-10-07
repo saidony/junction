@@ -1,83 +1,67 @@
-function renderEvents(filteredEvents = events) {
-  const container = document.getElementById("events-container");
+async function loadEvents() {
+  const category = state.category || "All";
+  const response = await fetch(`/api/events?category=${encodeURIComponent(category)}`);
+  const data = await response.json();
 
-  if (!container) {
-    return;
+  if (!response.ok || !data.success) {
+    throw new Error(data.message || "Unable to load events.");
   }
 
-  if (!filteredEvents.length) {
-    container.innerHTML = `
-      <div class="empty-state">
-        <h3>No events found</h3>
-        <p>Try changing your search or category.</p>
-      </div>
-    `;
-
-    return;
-  }
-
-  container.innerHTML = filteredEvents
-    .map(
-      (event) => `
-        <article class="event-card">
-          <div class="event-image">
-            <img src="${event.image}" alt="${event.title}">
-            <span class="event-category">${event.category}</span>
-          </div>
-
-          <div class="event-card-content">
-            <h3>${event.title}</h3>
-
-            <div class="event-meta">
-              <span>📅 ${event.date}</span>
-              <span>⏰ ${event.time}</span>
-            </div>
-
-            <p>${event.description}</p>
-
-            <div class="event-footer">
-              <strong>₹${event.price}</strong>
-
-              <button
-                class="btn btn-primary"
-                onclick="openBookingModal(${event.id})"
-              >
-                Book Now
-              </button>
-            </div>
-          </div>
-        </article>
-      `
-    )
-    .join("");
+  state.events = data.events || [];
+  renderEvents();
 }
 
-function setupEventFilters() {
-  const searchInput = document.getElementById("event-search");
-  const categorySelect = document.getElementById("event-category");
+function renderEvents() {
+  const container = document.getElementById("events-grid");
+  if (!container) return;
 
-  function filterEvents() {
-    const search =
-      searchInput?.value.toLowerCase().trim() || "";
-
-    const category =
-      categorySelect?.value || "all";
-
-    const filtered = events.filter((event) => {
-      const matchesSearch =
-        event.title.toLowerCase().includes(search) ||
-        event.description.toLowerCase().includes(search);
-
-      const matchesCategory =
-        category === "all" ||
-        event.category === category;
-
-      return matchesSearch && matchesCategory;
-    });
-
-    renderEvents(filtered);
+  if (!state.events.length) {
+    container.innerHTML = `<div class="empty-state">No events found.</div>`;
+    return;
   }
 
-  searchInput?.addEventListener("input", filterEvents);
-  categorySelect?.addEventListener("change", filterEvents);
+  container.innerHTML = state.events.map((event) => {
+    const isSoldOut = Number(event.availableSeats) <= 0;
+    return `
+    <article class="event-card">
+      <div class="event-badge">${escapeHtml(event.category)}</div>
+      <h3>${escapeHtml(event.title)}</h3>
+      <p>${escapeHtml(event.description)}</p>
+      <div class="event-meta">
+        <span>📅 ${escapeHtml(event.date)}</span>
+        <span>⏰ ${escapeHtml(event.time)}</span>
+        <span>📍 ${escapeHtml(event.venue)}</span>
+      </div>
+      <div class="event-bottom">
+        <strong>₹${event.price}</strong>
+        <span>${isSoldOut ? "Sold Out" : `${event.availableSeats} seats left`}</span>
+      </div>
+      <button class="primary-btn" ${isSoldOut ? "disabled" : ""} onclick="openSeatPicker('${event.id}')">
+        ${isSoldOut ? "Sold Out" : "Select Seats"}
+      </button>
+    </article>
+  `;
+  }).join("");
+}
+
+function renderCategories() {
+  const container = document.getElementById("categories");
+  if (!container) return;
+
+  container.innerHTML = fallbackCategories.map((category) => `
+    <button class="category-btn ${state.category === category ? "active" : ""}"
+      onclick="selectCategory('${category}')">
+      ${escapeHtml(category)}
+    </button>
+  `).join("");
+}
+
+async function selectCategory(category) {
+  state.category = category;
+  renderCategories();
+  try {
+    await loadEvents();
+  } catch (error) {
+    showToast(error.message, "error");
+  }
 }

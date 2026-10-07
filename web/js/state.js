@@ -1,32 +1,36 @@
 const state = {
-  currentUser: null,
-  currentPage: 'home',
-  selectedEvent: null,
-  bookings: [],
+  user: null,
+  token: localStorage.getItem("junction_token") || "",
   events: [],
-  speakers: []
+  bookings: [],
+  selectedEvent: null,
+  selectedSeats: new Set(),
+  category: "All"
 };
 
-function setCurrentUser(user) {
-  state.currentUser = user;
+function setSession(token, user) {
+  state.token = token || "";
+  state.user = user || null;
+
+  if (state.token) localStorage.setItem("junction_token", state.token);
+  else localStorage.removeItem("junction_token");
+
+  localStorage.setItem("junction_user", JSON.stringify(state.user || null));
 }
 
-function getCurrentUser() {
-  return state.currentUser;
+function clearSession() {
+  state.token = "";
+  state.user = null;
+  state.bookings = [];
+  localStorage.removeItem("junction_token");
+  localStorage.removeItem("junction_user");
 }
 
-function setCurrentPage(page) {
-  state.currentPage = page;
-}
-
-function getCurrentPage() {
-  return state.currentPage;
-}
-
-function setSelectedEvent(event) {
-  state.selectedEvent = event;
-}
-
-function getSelectedEvent() {
-  return state.selectedEvent;
+function loadCachedUser() {
+  try {
+    const saved = JSON.parse(localStorage.getItem("junction_user") || "null");
+    if (saved) state.user = saved;
+  } catch {
+    state.user = null;
+  }
 }

@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  # Official MongoDB Database Server
+  mongodb:
+    image: mongo:7.0
+    container_name: junction-mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: junction
+    volumes:
+      - mongo_data:/data/db
+
+  # MongoDB Web Admin Dashboard (Optional)
+  # Access at http://localhost:8081
+  mongo-express:
+    image: mongo-express:latest
+    container_name: junction-mongo-express
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongodb
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: "true"
+      ME_CONFIG_BASICAUTH: "false"
+    depends_on:
+      - mongodb
+
+volumes:
+  mongo_data:

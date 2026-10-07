@@ -1,77 +1,215 @@
-/* ============================================================
-   auth.js
-   Everything related to signing in, signing up, and logging
-   out. This is a client-only demo auth system — "users" is an
-   in-memory array (see state.js), so accounts do not persist
-   across a page refresh. Swap this file out for real API calls
-   if you connect a backend later.
-   ============================================================ */
+function showAuth(mode = "signup") {
+  const modal = document.getElementById("auth-modal");
+  if (!modal) return;
 
-function switchTab(tab) {
-  document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none';
-  document.getElementById('form-signup').style.display = tab === 'signup' ? 'block' : 'none';
-  const heading = document.querySelector('#page-login .login-right > div:first-child > div:first-child');
-  if (heading) heading.textContent = tab === 'login' ? 'Welcome Back' : 'Create Your Account';
-  clearErrors();
+  modal.classList.remove("hidden");
+  switchAuthTab(mode);
+  clearAuthErrors();
 }
 
-function clearErrors() {
-  ['login-email-err', 'login-pass-err', 'login-general-err', 'reg-email-err', 'reg-pass-err', 'reg-general-err']
-    .forEach(id => { const e = document.getElementById(id); if (e) e.textContent = ''; });
+function closeAuth() {
+  document.getElementById("auth-modal")?.classList.add("hidden");
 }
 
-function doLogin() {
-  clearErrors();
-  const email = document.getElementById('login-email').value.trim();
-  const pass = document.getElementById('login-pass').value;
+function switchAuthTab(mode) {
+  const login = document.getElementById("login-form");
+  const signup = document.getElementById("signup-form");
+  const loginTab = document.getElementById("login-tab");
+  const signupTab = document.getElementById("signup-tab");
 
-  if (!email) { document.getElementById('login-email-err').textContent = 'Email is required'; return; }
-  if (!pass) { document.getElementById('login-pass-err').textContent = 'Password is required'; return; }
-
-  const user = users.find(u => u.email === email && u.pass === pass);
-  if (!user) { document.getElementById('login-general-err').textContent = 'Invalid email or password'; return; }
-
-  loginSuccess(user);
+  const isLogin = mode === "login";
+  login?.classList.toggle("hidden", !isLogin);
+  signup?.classList.toggle("hidden", isLogin);
+  loginTab?.classList.toggle("active", isLogin);
+  signupTab?.classList.toggle("active", !isLogin);
+  clearAuthErrors();
 }
 
-function doSignup() {
-  clearErrors();
-  const fname = document.getElementById('reg-fname').value.trim();
-  const lname = document.getElementById('reg-lname').value.trim();
-  const email = document.getElementById('reg-email').value.trim();
-  const phone = document.getElementById('reg-phone').value.trim();
-  const pass = document.getElementById('reg-pass').value;
+function clearAuthErrors() {
+  const error = document.getElementById("auth-error");
+  if (error) {
+    error.textContent = "";
+    error.classList.add("hidden");
+  }
+}
 
-  if (!fname || !lname || !email || !phone || !pass) {
-    document.getElementById('reg-general-err').textContent = 'Please fill in all fields';
+function authError(message) {
+  const error = document.getElementById("auth-error");
+  if (!error) return;
+  error.textContent = message;
+  error.classList.remove("hidden");
+}
+
+async function signup(event) {
+  event.preventDefault();
+
+  const form = event.currentTarget;
+  const button = form.querySelector("button[type=submit]");
+  button.disabled = true;
+
+  try {
+    const body = {
+      name: form.name.value,
+      email: form.email.value,
+      mobile: form.mobile.value,
+      password: form.password.value
+    };
+
+    const response = await fetch("/api/auth/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new Error(data.message || "Unable to create account.");
+    }
+
+    setSession(data.token, data.user);
+    form.reset();
+    closeAuth();
+    updateAuthUI();
+    await loadMyBookings();
+    showToast("Account created successfully.");
+  } catch (error) {
+    authError(error.message);
+  } finally {
+    button.disabled = false;
+  }
+}
+
+async function login(event) {
+  event.preventDefault();
+
+  const form = event.currentTarget;
+  const button = form.querySelector("button[type=submit]");
+  button.disabled = true;
+
+  try {
+    const response = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: form.email.value,
+        password: form.password.value
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new Error(data.message || "Unable to login.");
+    }
+
+    setSession(data.token, data.user);
+    form.reset();
+    closeAuth();
+    updateAuthUI();
+    await loadMyBookings();
+    showToast("Welcome back.");
+  } catch (error) {
+    authError(error.message);
+  } finally {
+    button.disabled = false;
+  }
+}
+
+async function googleCredentialResponse(response) {
+  try {
+    const result = await fetch("/api/auth/google", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ credential: response.credential })
+    });
+
+    const data = await result.json();
+
+    if (!result.ok || !data.success) {
+      throw new Error(data.message || "Google Sign-In failed.");
+    }
+
+    setSession(data.token, data.user);
+    closeAuth();
+    updateAuthUI();
+    await loadMyBookings();
+    showToast("Signed in with Google.");
+  } catch (error) {
+    authError(error.message);
+  }
+}
+
+function initGoogleSignIn() {
+  const clientId = window.JUNCTION_GOOGLE_CLIENT_ID || "";
+  const button = document.getElementById("google-signin");
+
+  if (!button || !clientId || !window.google?.accounts?.id) {
+    if (button) button.classList.add("hidden");
     return;
   }
-  if (pass.length < 6) {
-    document.getElementById('reg-pass-err').textContent = 'Min. 6 characters';
-    return;
-  }
-  if (users.find(u => u.email === email)) {
-    document.getElementById('reg-email-err').textContent = 'Account already exists';
-    return;
-  }
 
-  users.push({ email, pass, fname, lname, phone });
-  loginSuccess(users[users.length - 1]);
+  button.classList.remove("hidden");
+
+  window.google.accounts.id.initialize({
+    client_id: clientId,
+    callback: googleCredentialResponse
+  });
+
+  window.google.accounts.id.renderButton(button, {
+    theme: "outline",
+    size: "large",
+    width: "100%"
+  });
 }
 
-function loginSuccess(user) {
-  currentUser = user;
-  document.getElementById('nav-auth').style.display = 'none';
-  document.getElementById('nav-user').style.display = 'flex';
-  document.getElementById('nav-username').textContent = user.fname;
-  showToast('Welcome, ' + user.fname + '! 🎉');
-  showPage('home');
+async function restoreSession() {
+  loadCachedUser();
+
+  if (!state.token) {
+    updateAuthUI();
+    return;
+  }
+
+  try {
+    const response = await fetch("/api/auth/me", {
+      headers: { Authorization: `Bearer ${state.token}` }
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      clearSession();
+    } else {
+      state.user = data.user;
+    }
+  } catch {
+    // Keep the local session until the server can be reached again.
+  }
+
+  updateAuthUI();
 }
 
 function logout() {
-  currentUser = null;
-  document.getElementById('nav-auth').style.display = 'flex';
-  document.getElementById('nav-user').style.display = 'none';
-  showToast('Logged out successfully');
-  showPage('home');
+  clearSession();
+  updateAuthUI();
+  renderBookings();
+  showToast("Logged out.");
+}
+
+function updateAuthUI() {
+  const loginButton = document.getElementById("login-button");
+  const signupButton = document.getElementById("signup-button");
+  const userArea = document.getElementById("user-area");
+  const userName = document.getElementById("user-name");
+  const bookingsLink = document.getElementById("bookings-link");
+
+  const loggedIn = Boolean(state.user);
+
+  loginButton?.classList.toggle("hidden", loggedIn);
+  signupButton?.classList.toggle("hidden", loggedIn);
+  userArea?.classList.toggle("hidden", !loggedIn);
+  bookingsLink?.classList.toggle("hidden", !loggedIn);
+
+  if (userName) userName.textContent = loggedIn ? state.user.name : "";
 }
